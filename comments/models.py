@@ -1,3 +1,16 @@
 from django.db import models
+from core import models as core_models
+from users import models as user_models
+from posts import models as post_models
 
-# Create your models here.
+
+class Comment(core_models.TimeStampedModel):
+
+    """Comment Model Definition"""
+
+    post = models.ForeignKey(post_models.Post, on_delete=models.CASCADE)
+    author_name = models.ForeignKey(user_models.User, on_delete=models.CASCADE)
+    comment_text = models.TextField()
+
+    def __str__(self):
+        return self.comment_text
