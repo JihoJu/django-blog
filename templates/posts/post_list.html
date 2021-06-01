@@ -2,7 +2,7 @@
     
     {% block contents %}
     {% for post in posts %}
-        <h3>{{post.title}} - {{post.author}}</h3>
+        <h3><a href="{% url 'posts:detail' post.pk %}">{{post.title}} - {{post.author}}</a></h3>
     {% endfor %}
 
     <h5>

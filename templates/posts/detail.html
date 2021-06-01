@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+    {% block contents %}
+        <div>
+            <h1>{{post.title}}</h1>
+            <h3>{{post.content}}</h3>
+        </div>
+        <div>
+            <h2>
+                By: {{post.author}}
+                {% if post.author.superhost %}
+                    (superhost)
+                {% endif %}
+                    
+            </h2>
+        </div>
+    {% endblock contents %}
+        

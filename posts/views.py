@@ -1,5 +1,5 @@
-# from django.shortcuts import render, redirect
 # from django.core.paginator import Paginator, EmptyPage
+from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from . import models as post_models
 
@@ -13,6 +13,14 @@ class HomeView(ListView):
     paginate_orphans = 5
     ordering = "created"
     context_object_name = "posts"
+
+
+def post_detail(request, pk):
+    try:
+        post = post_models.Post.objects.get(pk=pk)
+        return render(request, "posts/detail.html", context={"post": post})
+    except post_models.Post.DoesNotExist:
+        return redirect("core:home")
 
 
 """ def all_posts(request):
