@@ -13,3 +13,8 @@ class Post(core_models.TimeStampedModel):
 
     def __str__(self):
         return f"{self.title} - {self.author}"
+
+    # TODO
+    def comments_count(self):
+        commentCount = self.comments.count()
+        return int(commentCount)

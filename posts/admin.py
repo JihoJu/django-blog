@@ -19,3 +19,12 @@ class PostAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    list_display = (
+        "title",
+        "content",
+        "author",
+        "comments_count",
+    )
+
+    search_fields = ("^author__username",)
