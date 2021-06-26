@@ -24,7 +24,8 @@ class CustomUserAdmin(UserAdmin):
     )
 
     def user_avatar_thumbnail(self, obj):
-        return mark_safe(f'<img width=50px src="{obj.avatar.url}" />')
+        if obj.avatar:
+            return mark_safe(f'<img width=50px src="{obj.avatar.url}" />')
 
     user_avatar_thumbnail.short_description = "Thumbnail"
 
