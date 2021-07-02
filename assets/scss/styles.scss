@@ -10,6 +10,50 @@
 }
 
 input {
-    @apply w-full mb-3 border text-lg px-2 py-2 focus:outline-none;
+    @apply w-full border text-lg px-3 py-3 focus:outline-none;
+}
+
+.has_error {
+    input {
+        @apply bg-red-200 text-gray-700;
+        &:focus {
+            @apply bg-white text-gray-700;
+        }
+    }
+}
+
+@keyframes messageFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    5% {
+        opacity: 1;
+        transform: translateX(50px);
+    }
+    95% {
+        opacity: 1;
+        transform: translateX(50px);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+}
+
+.messages {
+    animation: messageFadeIn 5s ease-in-out forwards;
+    &.info {
+        background-color: cornflowerblue;
+    }
+    &.success {
+        @apply bg-green-500;
+    }
+    &.warning {
+        @apply bg-yellow-400;
+    }
+    &.error {
+        @apply bg-red-600;
+    }
 }
 @tailwind utilities;

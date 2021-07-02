@@ -1,11 +1,16 @@
 from django import forms
+from django.forms import widgets
+from django.forms.fields import EmailField
+from django.forms.widgets import EmailInput, TextInput
 from . import models
 
 
 class LoginForm(forms.Form):
 
-    email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput)
+    email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email"}))
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "Password"})
+    )
 
     def clean(self):
         email = self.cleaned_data.get("email")
@@ -23,11 +28,19 @@ class LoginForm(forms.Form):
 
 class SignUpForm(forms.Form):
 
-    first_name = forms.CharField(max_length=80)
-    last_name = forms.CharField(max_length=80)
-    email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput)
-    password1 = forms.CharField(widget=forms.PasswordInput)
+    first_name = forms.CharField(
+        max_length=80, widget=forms.TextInput(attrs={"placeholder": "First Name"})
+    )
+    last_name = forms.CharField(
+        max_length=80, widget=forms.TextInput(attrs={"placeholder": "Last Name"})
+    )
+    email = forms.EmailField(widget=EmailInput(attrs={"placeholder": "Email"}))
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "Password"})
+    )
+    password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "Confirm Password"})
+    )
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
