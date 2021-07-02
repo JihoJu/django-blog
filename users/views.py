@@ -1,11 +1,13 @@
+from django.db import models
 from django.urls.base import reverse_lazy
 from django.views import View
-from django.views.generic import FormView
+from django.views.generic import FormView, DetailView, UpdateView
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from . import forms
+from django.contrib.messages.views import SuccessMessageMixin
+from . import forms, models
 
 
 class LoginView(View):
@@ -51,3 +53,41 @@ class SignUpView(FormView):
             messages.success(self.request, f"Welcome!! {user.first_name}")
             login(self.request, user)
         return super().form_valid(form)
+
+
+class UserProfileView(DetailView):
+
+    """UserProfileView Definition"""
+
+    model = models.User
+    context_object_name = "user_obj"
+    template_name = "users/user_profile.html"
+
+
+class UpdateProfileView(SuccessMessageMixin, UpdateView):
+
+    """UserProfileUpdate View Definition"""
+
+    model = models.User
+    template_name = "users/update-profile.html"
+    fields = (
+        "first_name",
+        "last_name",
+        "avatar",
+        "gender",
+        "bio",
+        "superhost",
+    )
+    success_message = "Profile Updated"
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        return form
+
+    def get_success_url(self):
+        pk = self.request.user.pk
+        return reverse("users:profile", kwargs={"pk": pk})
+        # return self.request.user.get_absolute_url() => 이렇게 User model에서 get_absolute_url를 정의해서 사용할 수 있당~

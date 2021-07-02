@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.urls.base import reverse
 from django.db import models
 
 
@@ -22,3 +23,6 @@ class User(AbstractUser):
     )
     bio = models.TextField(default="", blank=True)
     superhost = models.BooleanField(default=False)
+
+    # def get_absolute_url(self):
+    #     return reverse("users:profile", kwargs={"pk": self.pk})

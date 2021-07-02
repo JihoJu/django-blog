@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+    {{user_obj.first_name}}'s Profile
+{% endblock page_title %}
+
+{% block contents %}    
+    <div class="container lg:w-5/12 md:w-1/2 xl:w-1/4 mx-auto my-10 flex flex-col items-center border p-6 border-gray-200">
+        {% include "mixins/user_avartar.html" %}
+        <div class="flex items-center justify-center">
+            <span class="text-3xl mt-1">{{user_obj.first_name}}</span>
+            {% if user_obj.superhost %}
+                <i class=" text-yellow-400 fas fa-check-circle fa-lg ml-1"></i>
+            {% endif %}
+        </div>
+        <span class="text-lg mb-5">{{user_obj.bio}}</span>
+        
+        {% if user_obj == user %}
+            <a href="{% url 'users:update' %}">Update Profile</a>
+        {% endif %}
+    </div>
+{% endblock contents %}
+    
+    

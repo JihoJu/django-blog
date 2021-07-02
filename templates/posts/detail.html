@@ -6,11 +6,10 @@
         </div>
         <div>
             <h2>
-                By: {{post.author}}
+                By: <a href="{% url 'users:profile' post.author.pk %}" class="text-blue-400">{{post.author}}</a>
                 {% if post.author.superhost %}
                     (superhost)
                 {% endif %}
-                    
             </h2>
         </div>
     {% endblock contents %}
