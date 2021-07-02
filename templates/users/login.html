@@ -4,12 +4,14 @@
     Log In
 {% endblock page_title %}
 
-{% block contents %}
-    <form method="POST" action="{% url "users:login" %}">
-        {% csrf_token %}
-        {{form.as_p}}
-        <button>Login</button>
-    </form>
+{% block contents %}    
+    <div class="container lg:w-5/12 md:w-1/2 xl:w-1/4 mx-auto my-10 flex flex-col items-center border p-6 border-gray-200">
+        {% include 'mixins/auth/auth_form.html' with form=form cta="Log In" %}
+        <div class="flex flex-col justify-center items-center mt-3">
+            <span class="text-xl">Don't have an account?</span>
+            <a href="{% url 'users:signup' %}" class="text-2xl font-medium text-purple-600">Sign Up</a>
+        </div>
+    </div>
 {% endblock contents %}
     
     
