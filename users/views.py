@@ -1,16 +1,17 @@
 from django.db import models
-from django.urls.base import reverse_lazy
+from django.urls.base import clear_script_prefix, reverse_lazy
 from django.views import View
+from django.contrib.auth.views import PasswordChangeView
 from django.views.generic import FormView, DetailView, UpdateView
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from . import forms, models
+from . import forms, models, mixins
 
 
-class LoginView(View):
+class LoginView(mixins.LoggedOutOnlyView, View):
     def get(self, request):
         form = forms.LoginForm(initial={"email": "admin@admin.com"})
         return render(request, "users/login.html", {"form": form})
@@ -34,7 +35,7 @@ def log_out(request):
     return redirect(reverse("core:home"))
 
 
-class SignUpView(FormView):
+class SignUpView(mixins.LoggedOutOnlyView, FormView):
     template_name = "users/signup.html"
     form_class = forms.SignUpForm
     success_url = reverse_lazy("core:home")
@@ -64,7 +65,7 @@ class UserProfileView(DetailView):
     template_name = "users/user_profile.html"
 
 
-class UpdateProfileView(SuccessMessageMixin, UpdateView):
+class UpdateProfileView(mixins.LoggedInOnlyView, SuccessMessageMixin, UpdateView):
 
     """UserProfileUpdate View Definition"""
 
@@ -91,3 +92,16 @@ class UpdateProfileView(SuccessMessageMixin, UpdateView):
         pk = self.request.user.pk
         return reverse("users:profile", kwargs={"pk": pk})
         # return self.request.user.get_absolute_url() => 이렇게 User model에서 get_absolute_url를 정의해서 사용할 수 있당~
+
+
+class UpdatePasswordView(
+    mixins.LoggedInOnlyView, SuccessMessageMixin, PasswordChangeView
+):
+
+    """UpdatePasswordView Definition"""
+
+    model = models.User
+    template_name = "users/update-password.html"
+    form_class = forms.UpdatePasswordForm
+    success_message = "Password Updated"
+    success_url = reverse_lazy("core:home")
