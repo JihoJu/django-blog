@@ -5,23 +5,28 @@
     {% endblock page_title %}
         
     {% block contents %}
-    <div class="flex flex-col px-20 my-5">
+    <div class="flex flex-col px-20 my-5 items-center">
         {% for post in posts %}
-            <div class="border-b mb-5 py-6">
-                <a href="{% url 'posts:detail' post.pk %}">
-                    <div class="flex items-center mb-3">
-                        {% include "mixins/user_avartar.html" with user=post.author h_and_w='w-10 h-10' %}
-                        <div class="ml-5">
-                            <span class="text-lg block">{{post.author}}</span>
-                            <span>{{post.created|date:'F Y'}}</span>
+            <div class="w-3/5 border-b mb-5 py-6 flex items-center">
+                <div>
+                    <a href="{% url 'posts:detail' post.pk %}">
+                        <div class="flex items-center mb-3">
+                            {% include "mixins/user_avartar.html" with user=post.author h_and_w='w-10 h-10' %}
+                            <div class="ml-5">
+                                <span class="text-lg block">{{post.author}}</span>
+                                <span>{{post.created|date:'F Y'}}</span>
+                            </div>
                         </div>
-                    </div>
-                    <span class="text-3xl font-medium block mb-5">{{post.title}}</span>
-                    <p class="text-lg">
-                        {{post.content}}
-                    </p>
-                    <span class="text-gray-500 block mt-6">댓글 {{post.comments_count}}</span>
-                </a>
+                        <span class="text-3xl font-medium block mb-5">{{post.title}}</span>
+                        <p class="text-lg">
+                            {{post.content}}
+                        </p>
+                        <span class="text-gray-500 block mt-6">댓글 {{post.comments_count}}</span>
+                    </a>
+                </div>
+                <div class="ml-10">
+                    <img src="{{post.first_photo}}" />
+                </div>
             </div>
         {% endfor %}
 
