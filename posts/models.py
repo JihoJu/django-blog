@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 from django.db import models
 from django.urls import reverse
 from core import models as core_models
@@ -41,3 +42,16 @@ class Post(core_models.TimeStampedModel):
             return photo.file.url
         except ValueError:
             return None
+
+    def created_string(self):
+        created_time = datetime.now(tz=timezone.utc) - self.created
+
+        if created_time < timedelta(minutes=1):
+            return "방금 전"
+        elif created_time < timedelta(hours=1):
+            return str(int(created_time.seconds / 60)) + " 분 전"
+        elif created_time < timedelta(days=1):
+            return str(int(created_time.seconds / 3600)) + " 시간 전"
+        else:
+            created_time = datetime.now(tz=timezone.utc).date() - self.created.date()
+            return str(created_time.days) + " 일 전"
