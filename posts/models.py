@@ -45,6 +45,7 @@ class Post(core_models.TimeStampedModel):
 
     def created_string(self):
         created_time = datetime.now(tz=timezone.utc) - self.created
+        # setting.py에서 USE_TZ가 True인 경우 datetime.now()로 써도 무방하다.
 
         if created_time < timedelta(minutes=1):
             return "방금 전"

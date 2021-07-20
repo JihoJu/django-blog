@@ -8,7 +8,14 @@
             </div>
             <span>{{post.created_string}}</span>
         </div>
-        <div class="my-20">
+        <div class="my-20 py-2 relative">
+            
+            {% if post.author == user %}
+                <a href="{% url 'posts:edit' pk=post.pk %}">
+                    <span class="absolute block -mt-20 ml-3 py-1 px-2 font-medium text-lg border-2 rounded-lg border-yellow-400 bg-yellow-400 text-white">수정</span>
+                </a>
+            {% endif %}
+            
             <div class="flex justify-center">
                 {% for photo in post.photos.all %}
                     <img class="ml-2" width="200px" src="{{photo.file.url}}" />

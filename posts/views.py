@@ -1,7 +1,11 @@
 # from django.core.paginator import Paginator, EmptyPage
+from django.http.response import Http404
 from django.shortcuts import render, redirect
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from . import models as post_models
+from users import mixins as user_mixins
 
 
 class HomeView(ListView):
@@ -11,7 +15,7 @@ class HomeView(ListView):
     model = post_models.Post
     paginate_by = 10
     paginate_orphans = 5
-    ordering = "created"
+    ordering = "-created"
     context_object_name = "posts"
 
 
@@ -21,6 +25,31 @@ def post_detail(request, pk):
         return render(request, "posts/detail.html", context={"post": post})
     except post_models.Post.DoesNotExist:
         return redirect("core:home")
+
+
+class EditPostView(user_mixins.LoggedInOnlyView, UpdateView):
+
+    """EditPostView Definition"""
+
+    model = post_models.Post
+    template_name = "posts/post_edit.html"
+    fields = (
+        "title",
+        "content",
+    )
+
+    # message를 띄워주기 위함!!
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        messages.success(self.request, "Post Updated!")
+        return super().post(request, *args, **kwargs)
+
+    # 로그인 사용자가 url을 통해 다른 사용자 post/edit에 들어는 것을 막기 위함
+    def get_object(self, queryset=None):
+        post = super().get_object(queryset=queryset)
+        if post.author.pk != self.request.user.pk:
+            raise Http404()
+        return post
 
 
 """ def all_posts(request):
