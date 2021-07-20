@@ -9,6 +9,10 @@
     @apply text-center rounded-lg py-5 font-light text-lg w-full font-medium;
 }
 
+.btn-link {
+    @apply text-center py-3 rounded-lg font-light text-lg w-full text-white bg-red-500;
+}
+
 input {
     @apply w-full border text-lg px-3 py-3 focus:outline-none;
 }

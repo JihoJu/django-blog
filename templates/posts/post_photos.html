@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+    {% block contents %}
+        <div class="container mx-auto my-10 flex flex-col items-center w-full">
+            {% for photo in post.photos.all %}
+                <div class="border-2 mt-5 flex justify-between rounded-2xl p-3 w-1/4">
+                    <div class="flex flex-col items-center w-1/2">
+                        <img src="{{photo.file.url}}" class="w-32 h-32" />
+                        <span class="text-light text-lg mt-2">{{photo.caption}}</span>
+                    </div>
+                    <div class="flex flex-col justify-center ml-2 w-1/2">
+                        <a href="{% url 'posts:edit-photo' post.pk photo.pk %}" class="btn border-2 w-full font-medium py-2 bg-yellow-400 text-white">Edit</a >
+                        <a href="{% url 'posts:delete-photo' post.pk photo.pk %}" class="btn border-2 w-full font-medium py-2 mt-2 bg-green-400 text-white">Delete</a >
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock contents %}
+        

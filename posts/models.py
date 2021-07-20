@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta, timezone
 from django.db import models
 from django.urls import reverse
+from django.dispatch import receiver
+from django.db.models.signals import post_delete
 from core import models as core_models
 from users import models as user_models
 
@@ -15,6 +17,12 @@ class Photo(core_models.TimeStampedModel):
 
     def __str__(self):
         return self.caption
+
+
+# 사진 delete 이벤트 시 uploads에 존재하는 파일 삭제
+@receiver(post_delete, sender=Photo)
+def file_delete_action(sender, instance, **kwargs):
+    instance.file.delete(False)
 
 
 class Post(core_models.TimeStampedModel):

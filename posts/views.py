@@ -1,7 +1,8 @@
 # from django.core.paginator import Paginator, EmptyPage
 from django.http.response import Http404
-from django.shortcuts import render, redirect
-from django.views.generic import ListView, UpdateView
+from django.shortcuts import render, redirect, reverse
+from django.views.generic import ListView, UpdateView, DetailView
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from . import models as post_models
@@ -50,6 +51,58 @@ class EditPostView(user_mixins.LoggedInOnlyView, UpdateView):
         if post.author.pk != self.request.user.pk:
             raise Http404()
         return post
+
+
+class PostPhotosView(user_mixins.LoggedInOnlyView, DetailView):
+
+    """RoomPhotosView Definition"""
+
+    model = post_models.Post
+    template_name = "posts/post_photos.html"
+
+    # 로그인 사용자가 url을 통해 다른 사용자 post/edit에 들어는 것을 막기 위함
+    def get_object(self, queryset=None):
+        post = super().get_object(queryset=queryset)
+        if post.author.pk != self.request.user.pk:
+            raise Http404()
+        return post
+
+
+@login_required
+def delete_photo(request, post_pk, photo_pk):
+
+    """Delete Photo Definition"""
+
+    user = request.user
+    try:
+        # foreign, manytomany 등과 관련된 필드 및  인스턴스를 삭제하려면 항상 관련 객체가 있는지 체크!!!!
+        post = post_models.Post.objects.get(pk=post_pk)
+        if post.author.pk != user.pk:
+            messages.error(request, "Can't delete that photo")
+        else:
+            post_models.Photo.objects.filter(pk=photo_pk).delete()
+            messages.success(request, "Photo Deleted!")
+        return redirect(reverse("posts:photos", kwargs={"pk": post_pk}))
+    except post_models.Post.DoesNotExist:
+        return redirect(reverse("core:home"))
+
+
+class EditPhotoView(user_mixins.LoggedInOnlyView, SuccessMessageMixin, UpdateView):
+
+    """PhotoEditView Definition"""
+
+    model = post_models.Photo
+    template_name = "posts/photo_edit.html"
+    pk_url_kwarg = "photo_pk"
+    success_message = "Photo Updated!"
+    fields = (
+        "file",
+        "caption",
+    )
+
+    def get_success_url(self):
+        post_pk = self.kwargs.get("post_pk")
+        return reverse("posts:photos", kwargs={"pk": post_pk})
 
 
 """ def all_posts(request):
