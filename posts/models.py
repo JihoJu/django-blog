@@ -1,8 +1,9 @@
+import os
 from datetime import datetime, timedelta, timezone
 from django.db import models
 from django.urls import reverse
 from django.dispatch import receiver
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, pre_save
 from core import models as core_models
 from users import models as user_models
 
@@ -23,6 +24,25 @@ class Photo(core_models.TimeStampedModel):
 @receiver(post_delete, sender=Photo)
 def file_delete_action(sender, instance, **kwargs):
     instance.file.delete(False)
+
+
+@receiver(pre_save, sender=Photo)
+def file_update_action(sender, instance, **kwargs):
+    if not instance.pk:
+        return False
+    try:
+        old_obj = sender.objects.get(pk=instance.pk)
+    except sender.DoesNotExist:
+        return False
+
+    for field in instance._meta.fields:
+        field_type = field.get_internal_type()
+        if field_type == "FileField" or field_type == "ImageField":
+            origin_file = getattr(old_obj, field.name)
+            new_file = getattr(instance, field.name)
+            print(origin_file, new_file)
+            if origin_file != new_file and os.path.isfile(origin_file.path):
+                os.remove(origin_file.path)
 
 
 class Post(core_models.TimeStampedModel):

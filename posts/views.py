@@ -1,11 +1,13 @@
 # from django.core.paginator import Paginator, EmptyPage
+from django.forms.forms import Form
 from django.http.response import Http404
 from django.shortcuts import render, redirect, reverse
-from django.views.generic import ListView, UpdateView, DetailView
+from django.views.generic import ListView, UpdateView, DetailView, FormView
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from . import models as post_models
+from .forms import AddPhotoForm, AddPostForm
 from users import mixins as user_mixins
 
 
@@ -18,6 +20,20 @@ class HomeView(ListView):
     paginate_orphans = 5
     ordering = "-created"
     context_object_name = "posts"
+
+
+class AddPostView(user_mixins.LoggedInOnlyView, FormView):
+
+    """AddPostView Definition"""
+
+    template_name = "posts/post_add.html"
+    form_class = AddPostForm
+
+    def form_valid(self, form):
+        user_pk = self.request.user.pk
+        post = form.save(user_pk)
+        messages.success(self.request, "Post Uploaded!")
+        return redirect(reverse("posts:detail", kwargs={"pk": post.pk}))
 
 
 def post_detail(request, pk):
@@ -51,6 +67,23 @@ class EditPostView(user_mixins.LoggedInOnlyView, UpdateView):
         if post.author.pk != self.request.user.pk:
             raise Http404()
         return post
+
+
+@login_required
+def post_delete(request, pk):
+
+    """Post Delete Definition"""
+
+    try:
+        post = post_models.Post.objects.get(pk=pk)
+        if post.author.pk != request.user.pk:
+            messages.error(request, "Can't delete that post")
+        else:
+            post.delete()
+            messages.success(request, "Post Deleted!")
+            return redirect(reverse("core:home"))
+    except post_models.Post.DoesNotExist:
+        return redirect("core:home")
 
 
 class PostPhotosView(user_mixins.LoggedInOnlyView, DetailView):
@@ -103,6 +136,20 @@ class EditPhotoView(user_mixins.LoggedInOnlyView, SuccessMessageMixin, UpdateVie
     def get_success_url(self):
         post_pk = self.kwargs.get("post_pk")
         return reverse("posts:photos", kwargs={"pk": post_pk})
+
+
+class AddPhotoView(user_mixins.LoggedInOnlyView, FormView):
+
+    """AddPhotoView Definition"""
+
+    template_name = "posts/photo_add.html"
+    form_class = AddPhotoForm
+
+    def form_valid(self, form):
+        pk = self.kwargs.get("pk")
+        form.save(pk)
+        messages.success(self.request, "Photo Uploaded!")
+        return redirect(reverse("posts:photos", kwargs={"pk": pk}))
 
 
 """ def all_posts(request):

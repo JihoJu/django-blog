@@ -71,7 +71,7 @@ textarea {
 
 form {
     .input {
-        @apply mb-3 w-full h-20;
+        @apply mb-3 w-full;
         &.has_error {
             input {
                 @apply bg-red-200 border-gray-600;
