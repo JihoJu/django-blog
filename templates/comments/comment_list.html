@@ -1,0 +1,18 @@
+<div>
+    <a href="#"><span class="text-lg font-medium text-blue-700 border-green-800">댓글 쓰기</span></a>
+    <ul class="mb-10">
+        {% for comment in comments %}
+            <li class="border-t-2 mt-3 pt-3">
+                <div class="flex items-center">
+                    {% include "mixins/user_avartar.html" with user=post.author h_and_w='w-8 h-8' %}
+                    <span class="ml-3 text-lg font-medium">{{comment.author_name}}</span>
+                </div>
+                <p class="my-3">
+                    {{comment}}
+                </p>
+                <span class="text-light text-gray-500">{{comment.created|date:'Y-m-d H:i'}}</span>
+            </li>       
+        {% endfor %}
+    </ul>
+</div>
+

@@ -58,7 +58,7 @@ class Post(core_models.TimeStampedModel):
 
     # TODO
     def comments_count(self):
-        commentCount = self.comments.count()
+        commentCount = self.post_comments.count()
         return int(commentCount)
 
     def get_absolute_url(self):

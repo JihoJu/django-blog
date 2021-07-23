@@ -1,5 +1,4 @@
 # from django.core.paginator import Paginator, EmptyPage
-from django.forms.forms import Form
 from django.http.response import Http404
 from django.shortcuts import render, redirect, reverse
 from django.views.generic import ListView, UpdateView, DetailView, FormView

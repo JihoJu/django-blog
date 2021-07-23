@@ -9,9 +9,11 @@ class Comment(core_models.TimeStampedModel):
     """Comment Model Definition"""
 
     post_name = models.ForeignKey(
-        post_models.Post, related_name="comments", on_delete=models.CASCADE
+        post_models.Post, related_name="post_comments", on_delete=models.CASCADE
     )
-    author_name = models.ForeignKey(user_models.User, on_delete=models.CASCADE)
+    author_name = models.ForeignKey(
+        user_models.User, related_name="author_comments", on_delete=models.CASCADE
+    )
     comment_text = models.TextField()
 
     def __str__(self):
