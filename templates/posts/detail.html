@@ -28,7 +28,7 @@
                 {{post.content}}
             </div>
         </div>
-        {% include 'comments/comment_list.html' with comments=post.post_comments.all %}
+        {% include 'comments/comment_list.html' with comments=post.post_comments.all post_pk=post.pk %}
     </div>
     {% endblock contents %}
         
